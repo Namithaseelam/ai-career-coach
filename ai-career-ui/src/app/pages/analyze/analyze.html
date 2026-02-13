@@ -1,0 +1,37 @@
+<h1>Analyze Your Resume</h1>
+
+<div class="upload-card">
+  <input type="file" name="fileUpload" id="fileUpload" (change)="onFileSelected($event)">
+
+  <select name="role" id="role" [(ngModel)]="selectedRole">
+    <option value="">Select Target Role</option>
+    <option>Data Scientist</option>
+    <option>Frontend Developer</option>
+    <option>Backend Developer</option>
+  </select>
+  <button (click)="analyze()">Analyze</button>
+</div>
+
+@if (loading()) {
+<p>Analyzing with AI...</p>
+}
+
+@if (result()) {
+<div class="results">
+  <h2>Match Score: {{result().score}}</h2>
+
+  <section>
+    <h3>Resume Feedback</h3>
+    <p>{{result().feedback}}</p>
+  </section>
+
+  <section>
+    <h3>Missing Shills</h3>
+    <ul>
+      @for (skill of result().missingSkills; track skill) {
+      <li>{{skill}}</li>
+      }
+    </ul>
+  </section>
+</div>
+}
