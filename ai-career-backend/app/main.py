@@ -1,21 +1,11 @@
-from app.api_client import APIClient
+from fastapi import FastAPI
+from app.routers import resume, ai
 
-def main():
-    client = APIClient()
+app = FastAPI(title = "AI Career Backend")
 
-    try:
-        result = client.get_data("example-endpoint")
-        print("GET result:", result)
-    except Exception as e:
-        print("Error:", e)
-    
+app.include_router(resume.router, prefix='/resume', tags=["Resume"])
+app.include_router(ai.router, prefix='/ai', tags=["AI"])
 
-    try:
-        payload = {"key": "value"}
-        result = client.post_data("example-endpoint", payload)
-        print("POST result:", result)
-    except Exception as e:
-        print("Error:", e)
-
-if __name__ == "__main__":
-    main()
+@app.get("/health")
+def health_check():
+    return {"status": "Backend is running"}

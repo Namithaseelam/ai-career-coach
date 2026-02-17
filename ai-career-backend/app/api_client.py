@@ -7,12 +7,13 @@ load_dotenv()
 API_BASE_URL = os.getenv("API_BASE_URL")
 API_KEY = os.getenv("API_KEY")
 
+print("Load Base URL:", API_BASE_URL)
 class APIClient:
     def __init__(self):
         self.base_url = API_BASE_URL
         self.headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer{API_KEY}"
+            "Authorization": f"Bearer {API_KEY}"
         }
     
     def get_data(self, endpoint: str, params=None):
