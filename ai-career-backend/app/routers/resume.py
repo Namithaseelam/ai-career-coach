@@ -13,5 +13,6 @@ class ResumeRequest(BaseModel):
 
 @router.post('/generate')
 def create_resume(request: ResumeRequest):
-    result = generate_resume(request)
-    return {"generated_resume": result}
+    return {
+        "generated_resume": generate_resume(request)
+    }

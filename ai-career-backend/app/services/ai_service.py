@@ -4,38 +4,57 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-AI_API_URL = os.getenv('AI_API_URL')
-AI_API_KEY = os.getenv("AI_API_KEY")
+OLLAMA_URL = os.getenv("OLLAMA_URL")
+MODEL_NAME = os.getenv("MODEL_NAME")
 
+def call_ollama(prompt: str):
 
-def generate_resume(data):
     payload = {
-        "name": data.name,
-        "skills": data.skills,
-        "experience": data.experience
+        "model": MODEL_NAME,
+        "prompt": prompt,
+        "stream": False
     }
 
-    response = requests.post(
-        AI_API_URL,
-        headers={
-             "Authorization": f"Bearer {AI_API_KEY}",
-            "Content-Type": "application/json"
-        }, 
-        json=payload
-        )
+    response = requests.post(OLLAMA_URL, json=payload)
+
+    if response.status_code != 200:
+        return {'error': response.text}
     
     return response.json()
 
+
+def generate_resume(data):
+
+    prompt = f"""
+    Generate a professional resume.
+
+    Name: {data.name}
+    Skills: {', '.join(data.skills)}
+    Experience: {data.experience}
+
+    Format it properly with sections.
+    """
+
+    result = call_ollama(prompt)
+
+    if "error" in result: 
+        return result
+    
+    return result['response']
+
+
 def get_career_suggestions(skills):
-    payload = {"skills": skills}
 
-    response = requests.post(
-        AI_API_URL,
-        headers={
-             "Authorization": f"Bearer {AI_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json=payload
-    )
+    prompt = f"""
+    Suggest 5 career paths for someone with these skills:
+    {', '.join(skills)}
 
-    return response.json()
+    Give short explanations.
+    """
+
+    result = call_ollama(prompt)
+
+    if "error" in result:
+        return result
+    
+    return result["response"]

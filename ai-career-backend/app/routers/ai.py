@@ -9,5 +9,6 @@ class SuggestionRequest(BaseModel):
 
 @router.post("/suggestions")
 def suggestions(request: SuggestionRequest):
-    result = get_career_suggestions(request.skills)
-    return {"suggestions": result}
+    return {
+    "career_suggestions": get_career_suggestions(request.skills)
+}
